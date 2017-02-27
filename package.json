@@ -1,0 +1,36 @@
+{
+  "name": "hopper",
+  "version": "0.1.0",
+  "description": "Node.js library and CLI for Hopper.",
+  "homepage": "https://github.com/valeriangalliat/hopper",
+  "license": "Unlicense",
+  "contributors": [
+    {
+      "name": "Valérian Galliat",
+      "url": "https://val.codejam.info/"
+    },
+    {
+      "name": "Marvel Mathew",
+      "url": "https://marvelmathew.ca/"
+    }
+  ],
+  "main": "src",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/valeriangalliat/hopper.git"
+  },
+  "scripts": {
+    "test": "standard"
+  },
+  "dependencies": {
+    "configstore": "^3.0.0",
+    "lodash.merge": "^4.6.0",
+    "mz": "^2.6.0",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
+    "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "standard": "^8.6.0"
+  }
+}
