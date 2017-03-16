@@ -1,4 +1,7 @@
+const chalk = require('chalk')
+const Table = require('cli-table2')
 const Config = require('configstore')
+const fs = require('fs')
 const merge = require('lodash.merge')
 const uuid = require('uuid')
 
@@ -39,12 +42,41 @@ const options = merge({}, defaultOptions, systemOptions, envOptions, configOptio
 
 const hopper = Hopper(options)
 
+function render (copy, googleFlightsLink) {
+  const logo = fs.readFileSync(`${__dirname}/../logo.ascii`, 'utf8')
+  const lines = logo.split('\n').map(x => x + '  ')
+
+  const textLines = [
+    `${chalk.yellow(copy.origin)} to ${chalk.yellow(copy.destination)}`,
+    chalk.yellow(copy.travelDates),
+    '',
+    `Current Lowest Price: ${chalk.bold(copy.lowestPriceLabel)}${copy.carrier}`,
+    '',
+    chalk.black.bgYellow(copy.recommendationTitle[0]),
+    copy.recommendationBody[0],
+  ];
+
+  Object.keys(copy.intervals).forEach(interval => {
+    textLines.push('', `${copy.intervals[interval].dates}:`, copy.intervals[interval].copy)
+  })
+
+  textLines.push('', 'See options on Google Flights:', chalk.blue(googleFlightsLink))
+
+  const padding = Math.floor((lines.length - textLines.length) / 2)
+
+  textLines
+    .map(line => line.replace(/<strong>/g, chalk.styles.bold.open).replace(/<\/strong>/g, chalk.styles.bold.close))
+    .forEach((line, i) => {
+      lines[padding + i] += `  ${line}`
+    })
+
+  return lines.join('\n')
+}
+
 module.exports = argv => {
   hopper.prediction(...argv)
     .then(data => {
-      console.log(JSON.stringify(data, null, 2))
-      console.log()
-      console.log(hopper.googleFlightsLink(...argv))
+      console.log(render(data.predictionCopy, hopper.googleFlightsLink(...argv)))
     })
     .catch(err => console.log(err.stack || err))
 }
